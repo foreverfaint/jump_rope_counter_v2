@@ -36,12 +36,7 @@ class _RecordListWidgetState extends State<RecordListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Jump Rope Counter V2'),
-      ),
-      body: _buildList(),
-    );
+    return _buildList();
   }
 
   _initRepository() {

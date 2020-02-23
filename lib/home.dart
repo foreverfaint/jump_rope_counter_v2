@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 
 import 'record_list_widget.dart';
 import 'counter_widget.dart';
+import 'json_localizations.dart';
 
 enum Route {
   listViewPage,
@@ -37,19 +38,19 @@ class _HomePageState extends State<HomePage> {
       case Route.listViewPage:
         return FloatingActionButton(
           onPressed: () => this.setState(() { _route = Route.counterPage; }),
-          tooltip: "Start",
+          tooltip: JsonLocalizations.of(context).text('start'),
           child: const Icon(Icons.play_arrow),
         );
       case Route.counterPage:
         return FloatingActionButton(
           onPressed: () => this.setState(() { _route = Route.listViewPage; }),
-          tooltip: "Stop",
+          tooltip: JsonLocalizations.of(context).text('stop'),
           child: const Icon(Icons.stop),
         );
       default:
         return FloatingActionButton(
           onPressed: () => this.setState(() { _route = Route.counterPage; }),
-          tooltip: "Start",
+          tooltip: JsonLocalizations.of(context).text('start'),
           child: const Icon(Icons.add),
         );
     }
@@ -63,6 +64,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: new AppBar(
+        title: new Text(JsonLocalizations.of(context).text('title')),
+      ),
       body: Center(
         child: _buildWidget()
       ),
