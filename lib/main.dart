@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:logging/logging.dart';
 
 import 'home.dart';
 import 'locales.dart';
@@ -9,6 +10,11 @@ import 'json_localizations_delegate.dart';
 List<CameraDescription> cameras;
 
 main() async {
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((record) {
+    print('[${record.loggerName}] ${record.level.name}: ${record.time}: ${record.message}');
+  });
+
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -16,6 +22,7 @@ main() async {
   } on CameraException catch (e) {
     print('Error: $e.code\nError Message: $e.message');
   }
+
   runApp(new MyApp());
 }
 

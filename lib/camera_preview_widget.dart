@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:logging/logging.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
@@ -7,23 +8,32 @@ import 'package:tflite/tflite.dart';
 import 'recognition_found_notifier.dart';
 
 class CameraPreviewWidget extends StatefulWidget {
+  final _log = Logger('CameraPreviewWidget');
+
   final CameraDescription camera;
 
   final RecognitionFoundNotifier notifier;
 
-  CameraPreviewWidget(this.camera, this.notifier);
+  CameraPreviewWidget(this.camera, this.notifier) : super(key: GlobalKey());
 
   @override
-  _CameraPreviewWidgetState createState() => new _CameraPreviewWidgetState();
+  _CameraPreviewWidgetState createState() {
+    _log.log(Level.INFO, '${this.key}.createState');
+    return new _CameraPreviewWidgetState();
+  }
 }
 
 class _CameraPreviewWidgetState extends State<CameraPreviewWidget> {
+  final _log = Logger('_CameraPreviewWidgetState');
+
   CameraController _controller;
 
   bool isDetecting = false;
 
   @override
   void initState() {
+    _log.log(Level.INFO, '${this.widget.key}.initState');
+
     super.initState();
 
     _controller = new CameraController(
@@ -63,15 +73,16 @@ class _CameraPreviewWidgetState extends State<CameraPreviewWidget> {
 
   @override
   void dispose() {
-    if (_controller != null) {
-      _controller?.dispose();
-      _controller = null;
-    }
+    _log.log(Level.INFO, '${this.widget.key}.dispose');
+    _controller?.dispose();
+    _controller = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    _log.log(Level.INFO, '${this.widget.key}.build');
+
     if (_controller == null || !_controller.value.isInitialized) {
       return Container();
     }

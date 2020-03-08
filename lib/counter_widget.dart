@@ -1,53 +1,61 @@
+import 'package:logging/logging.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:tflite/tflite.dart';
 
 import 'camera_preview_widget.dart';
 import 'bounding_box.dart';
 import 'recognition_found_notifier.dart';
 
 class CounterWidget extends StatefulWidget {
+  final _log = Logger('CounterWidget');
+
   final CameraDescription camera;
 
   final RecognitionFoundNotifier foundNotifier = RecognitionFoundNotifier();
 
-  CounterWidget(this.camera);
+  CounterWidget(this.camera) : super(key: GlobalKey());
 
   @override
-  _CounterWidgetState createState() => new _CounterWidgetState();
+  _CounterWidgetState createState() {
+    _log.log(Level.INFO, '${this.key}.createState');
+    return new _CounterWidgetState();
+  }
 }
 
 class _CounterWidgetState extends State<CounterWidget> {
+  final _log = Logger('_CounterWidgetState');
+
   var _personRecognitionResult;
+
+  var _cameraPreviewWidget;
 
   @override
   initState() {
-    print("_CounterWidgetState -> initState");
-
+    _log.log(Level.INFO, '${this.widget.key}.initState');
     super.initState();
-
+    _cameraPreviewWidget = CameraPreviewWidget(widget.camera, widget.foundNotifier);
     widget.foundNotifier.addListener(this._handleRecognitionFound);
-
-    _loadModels();
   }
 
   @override
   void dispose() {
+    _log.log(Level.INFO, '${this.widget.key}.dispose');
     super.dispose();
-    print("_CounterWidgetState -> dispose");
   }
 
   @override
   Widget build(BuildContext context) {
+    _log.log(Level.INFO, '${this.widget.key}.build');
+
     Size screen = MediaQuery.of(context).size;
 
     return Scaffold(
       body: Stack(
         children: _personRecognitionResult != null ? [
-          CameraPreviewWidget(widget.camera, widget.foundNotifier),
+          _cameraPreviewWidget,
           CustomPaint(painter: BoundingBox(_personRecognitionResult), size: screen)
         ] : [
-          CameraPreviewWidget(widget.camera, widget.foundNotifier),
+          _cameraPreviewWidget,
         ],
       ),
     );
@@ -83,12 +91,5 @@ class _CounterWidgetState extends State<CounterWidget> {
         }
       }
     }
-  }
-
-  _loadModels() async {
-    Tflite.loadModel(
-        model: "assets/ssd_mobilenet.tflite",
-        labels: "assets/ssd_mobilenet.txt"
-    );
   }
 }
